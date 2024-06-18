@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PESEL Validator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #262626;
+        }
+        .container {
+            text-align: center;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            font-size: 1.2em;
+            padding: 10px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #indicator {
+            margin-top: 20px;
+            color: green;
+            font-weight: bold;
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PESEL Validator</h1>
+        <p>Enter PESEL number:</p>
+        <input type="text" id="peselInput" oninput="validatePesel()">
+        <p id="indicator">Valid PESEL</p>
+    </div>
+
+    <script>
+        function isStringNumeric(str) {
+            return /^\d+$/.test(str);
+        }
+
+        function validate(pesel) {
+            try {
+                if (pesel.length !== 11 || !isStringNumeric(pesel)) {
+                    return false;
+                }
+
+                let peselArray = Array.from(pesel).map(digit => parseInt(digit, 10));
+
+                let weights = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3, 1];
+
+                let digitSum = 0;
+                for (let i = 0; i < 11; i++) {
+                    digitSum += peselArray[i] * weights[i];
+                }
+
+                return (digitSum % 10) === 0;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function validatePesel() {
+            const peselInput = document.getElementById('peselInput').value;
+            const indicator = document.getElementById('indicator');
+            if (validate(peselInput)) {
+                indicator.style.visibility = 'visible';
+            } else {
+                indicator.style.visibility = 'hidden';
+            }
+        }
+    </script>
+</body>
+</html>
